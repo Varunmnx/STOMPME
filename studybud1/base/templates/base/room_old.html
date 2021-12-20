@@ -1,0 +1,67 @@
+{% extends 'main.html'  %}
+{%   block c %}<!---this is template inheritance by using this we can add a part of our html to another html page-->
+<style>
+    .room-container{
+             
+          display: grid;
+          grid-template-columns: 3fr 1fr;
+
+    }
+</style>
+
+<div class="room-container">
+    <div>
+<h1> {{room.name}}</h1>
+
+<h1>{{room.description}}</h1> <!---here we are calling the return value from the views for dynamic url -->
+<div class="comment-wrapper">
+<h3>Conversation</h3>
+<hr>
+
+{% for message in room_messages %}
+  
+<div>
+   {% if request.user == message.user %}
+    <a href="{% url 'delete-message' message.id %}">delete</a>
+    {%endif%}
+    <small>@{{message.user}}  {{message.created|timesince}} ago </small>
+    <p>{{message.body}}</p>
+    <hr>
+</div>
+
+{% endfor %}
+
+</div>
+
+
+{% if request.user.is_authenticated %}
+<div class="comment-form">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="text" name="body" placeholder="write your message here" > 
+
+    </form>
+
+
+
+</div>
+{%endif%}
+
+</div>
+
+<div>
+
+    <h3>participants</h3>
+<hr>
+
+{%for user in participants%}
+<p>@{{user.username}}</p>  <!--here username is from the django in build registration form there are other attributes too-->
+
+
+{%endfor%}
+
+</div>
+
+</div>
+{% endblock %} <!--why didnt it showed any error even though the room here differ from one we mentioned in database-->
+<!--because in the room we created is assigned to the used variable (here)in url.py-->
